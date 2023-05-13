@@ -1,13 +1,13 @@
 import 'package:frontend/imports.dart';
 
-class Login extends StatefulWidget {
-  const Login({super.key});
+class Register extends StatefulWidget {
+  const Register({super.key});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<Register> createState() => _RegisterState();
 }
 
-class _LoginState extends State<Login> {
+class _RegisterState extends State<Register> {
   @override
   void initState() {
     super.initState();
@@ -18,12 +18,17 @@ class _LoginState extends State<Login> {
 
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
+  final TextEditingController _password2 = TextEditingController();
+  final TextEditingController _name = TextEditingController();
+  final TextEditingController _surname = TextEditingController();
+  final TextEditingController _number = TextEditingController();
+  final TextEditingController _position = TextEditingController();
 
   void submit() async {
     if (!validate()) {
       return;
     }
-    // Function to do the login
+    // Function to do the Register
   }
 
   bool validate() {
@@ -77,8 +82,13 @@ class _LoginState extends State<Login> {
                   width: 350,
                 ),
               ),
+              CustomTextField(textEditingController: _name, text: "Name", password: false, number: false),
+              CustomTextField(textEditingController: _surname, text: "Surname", password: false, number: false),
+              CustomTextField(textEditingController: _number, text: "Number", password: false, number: true),
+              CustomTextField(textEditingController: _position, text: "Position", password: false, number: false),
               CustomTextField(textEditingController: _email, text: "Email", password: false, number: false),
               CustomTextField(textEditingController: _password, text: "Password", password: true, number: false),
+              CustomTextField(textEditingController: _password2, text: "Repeat password", password: true, number: false),
               Container(
                 margin: const EdgeInsets.only(top: 50),
                 child: SizedBox(
@@ -92,7 +102,7 @@ class _LoginState extends State<Login> {
                         ))),
                         onPressed: () => submit(),
                         child: const Text(
-                          'Login',
+                          'Register',
                           style: TextStyle(fontSize: 22),
                         ))),
               ),
@@ -102,16 +112,16 @@ class _LoginState extends State<Login> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
-                        "You don't have an account? ",
+                        "Do you have an account? ",
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w400),
                       ),
                       GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(context, "/register");
+                            Navigator.pop(context);
                           },
                           child: const Text(
-                            "Sign up!",
+                            "Login!",
                             style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w400,

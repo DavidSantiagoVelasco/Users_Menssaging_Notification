@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
       home: const IsLoggedMiddleware(),
       routes: {
         '/login': (context) => const Login(),
+        '/register': (context) => const Register()
       },
     );
   }
