@@ -23,14 +23,16 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
-    number: {
-        type: String,
-        required: true
-    },
     position: {
         type: String,
         required: true
+    },
+    number: {
+        type: Number,
+        required: true
     }
 });
+
+UserSchema.index({ email: 1 });
 
 export default model<IUser>('users', UserSchema);

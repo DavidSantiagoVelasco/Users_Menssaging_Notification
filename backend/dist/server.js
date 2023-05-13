@@ -27,13 +27,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importStar(require("express"));
-const mongoRoute_1 = __importDefault(require("./routes/mongoRoute"));
+const usersRoute_1 = __importDefault(require("./routes/usersRoute"));
 class Server {
     constructor() {
         this.route = () => {
-            this.backend.use('/api', this.mongoRouter.router);
+            this.backend.use('/api/users', this.usersRouter.router);
         };
-        this.mongoRouter = new mongoRoute_1.default();
+        this.usersRouter = new usersRoute_1.default();
         this.backend = (0, express_1.default)();
         this.config();
         this.route();

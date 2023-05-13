@@ -6,6 +6,6 @@ export default interface IUser extends Document {
     name: String,
     surname: String,
     photo: String,
-    number: String,
+    number: Number,
     position: String
 }

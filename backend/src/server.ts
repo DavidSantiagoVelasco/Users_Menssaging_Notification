@@ -1,13 +1,13 @@
 import express, { Application, json } from "express";
-import MongoRoute from "./routes/mongoRoute";
+import UsersRoute from "./routes/usersRoute";
 
 class Server {
 
     private backend: Application;
-    private mongoRouter: MongoRoute;
+    private usersRouter: UsersRoute;
 
     constructor(){
-        this.mongoRouter = new MongoRoute();
+        this.usersRouter = new UsersRoute();
         this.backend = express();
         this.config();
         this.route();
@@ -19,7 +19,7 @@ class Server {
     }
 
     public route = (): void => {
-        this.backend.use('/api', this.mongoRouter.router);
+        this.backend.use('/api/users', this.usersRouter.router);
     }
 
     public start(){

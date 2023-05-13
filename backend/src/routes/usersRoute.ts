@@ -1,7 +1,7 @@
 import { Router } from "express";
 import UserController from "../controllers/usersController";
 
-class MongoRoute{
+class UsersRoute{
 
     public router: Router;
     private userController: UserController;
@@ -13,7 +13,8 @@ class MongoRoute{
     }
 
     private config = () => {
+        this.router.post('/register', this.userController.register);
     }
 }
 
-export default MongoRoute;
+export default UsersRoute;

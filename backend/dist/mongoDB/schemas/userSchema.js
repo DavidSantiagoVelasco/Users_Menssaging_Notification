@@ -23,13 +23,14 @@ const UserSchema = new mongoose_1.Schema({
         type: String,
         required: true
     },
-    number: {
-        type: String,
-        required: true
-    },
     position: {
         type: String,
         required: true
+    },
+    number: {
+        type: Number,
+        required: true
     }
 });
+UserSchema.index({ email: 1 });
 exports.default = (0, mongoose_1.model)('users', UserSchema);

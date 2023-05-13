@@ -1,21 +1,19 @@
 import mongoose from "mongoose";
 import UserSchema from "./schemas/userSchema";
+import informationFCMSchema from "./schemas/informationFCMSchema";
 import dotenv from "dotenv";
 
 class MongoDBC {
 
     private uri: string;
     public UserSchema: any;
-    public OfferSchema: any;
-    public FavoriteSchema: any;
-    public BiometricLoginUserDataSchema: any;
-    public RestaurantSchema: any;
-    public InformationUsersNotification: any;
+    public InformationFCMSchema: any;
 
     constructor() {
         dotenv.config();
         this.uri = process.env.URI || "";
         this.UserSchema = UserSchema;
+        this.InformationFCMSchema = informationFCMSchema;
     }
 
     public connection(){
