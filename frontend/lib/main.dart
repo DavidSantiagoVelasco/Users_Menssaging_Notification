@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'FoodHub',
+      title: 'User Messaging Notification',
       debugShowCheckedModeBanner: false,
       home: const IsLoggedMiddleware(),
       routes: {
