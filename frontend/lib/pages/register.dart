@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:frontend/imports.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -25,46 +26,69 @@ class _RegisterState extends State<Register> {
   final TextEditingController _surname = TextEditingController();
   final TextEditingController _number = TextEditingController();
   final TextEditingController _position = TextEditingController();
+  String _photo = "https://bit.ly/3Lstjcq";
   File? _image;
 
-  void submit() async {
-    if (!validate()) {
+  void _submit() async {
+    if (!_validate()) {
       return;
     }
-    // Function to do the Register
+    if (_image != null) {
+      await _uploadImageToCloudinary(_image!).then((value) {
+        print("Value de foto $value");
+        if (value != null) {
+          setState(() {
+            _photo = value;
+          });
+        }
+      });
+    }
+    var tokenFCM = PushNotificationService.token!;
+    RegisterRequestModel user = RegisterRequestModel(
+        email: _email.text,
+        password: _password.text,
+        name: _name.text,
+        surname: _surname.text,
+        photo: _photo,
+        position: _position.text,
+        number: _number.text,
+        tokenFCM: tokenFCM);
+    APIService.registerUser(user).then((value) {
+      if(value == 0){
+        CustomShowDialog.make(context, "Success", "User created successfully");
+        Navigator.pushReplacementNamed(context, "/index");
+      }else if(value == -1){
+        CustomShowDialog.make(context, "Error", "Email already registered");
+      } else if(value == -2){
+        CustomShowDialog.make(context, "Error", "Failed to created user"); 
+      } else {
+        CustomShowDialog.make(context, "Error", "An error ocurred. Please try again later");
+      }
+    });
   }
 
-  bool validate() {
-    if (_email.text == '' || _password.text == '') {
-      showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-                title: const Text('Error'),
-                content: const Text('You must fill in all the fields'),
-                actions: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Ok')),
-                ],
-              ));
+  bool _validate() {
+    if (_email.text == '' ||
+        _password.text == '' ||
+        _password2.text == '' ||
+        _name.text == '' ||
+        _surname.text == '' ||
+        _number.text == '' ||
+        _position.text == '') {
+          CustomShowDialog.make(context, "Error", "You must fill in all the fields");
       return false;
     }
     if (!emailValidator.hasMatch(_email.text)) {
-      showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-                title: const Text('Error'),
-                content: const Text('Invalid email'),
-                actions: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Ok')),
-                ],
-              ));
+      CustomShowDialog.make(context, "Error", "Invalid email");
+      return false;
+    }
+    if (_password.text != _password2.text) {
+      CustomShowDialog.make(context, "Error", "Passwords do not match");
+      return false;
+    }
+    String tokenFCM = PushNotificationService.token ?? "";
+    if (tokenFCM == "") {
+      CustomShowDialog.make(context, "Error", "An error ocurried, please close the application and try again.\nIf the error persist reinstall the application");
       return false;
     }
     return true;
@@ -118,6 +142,19 @@ class _RegisterState extends State<Register> {
         );
       },
     );
+  }
+
+  Future<String?> _uploadImageToCloudinary(File imageFile) async {
+    final cloudinary = CloudinaryPublic('dti2zyzir', 'prueba');
+    try {
+      final response = await cloudinary.uploadFile(
+        CloudinaryFile.fromFile(imageFile.path),
+      );
+      return response.secureUrl;
+    } catch (e) {
+      print("Error upload image $e");
+      return null;
+    }
   }
 
   @override
@@ -189,9 +226,7 @@ class _RegisterState extends State<Register> {
                       fit: BoxFit.scaleDown,
                       image: _image != null
                           ? FileImage(_image!)
-                          : const NetworkImage(
-                                  "https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg")
-                              as ImageProvider<Object>),
+                          : NetworkImage(_photo) as ImageProvider<Object>),
                 ),
                 child: Container(
                   margin: const EdgeInsets.only(right: 60),
@@ -226,14 +261,14 @@ class _RegisterState extends State<Register> {
                                 RoundedRectangleBorder>(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18.0),
                         ))),
-                        onPressed: () => submit(),
+                        onPressed: () => _submit(),
                         child: const Text(
                           'Register',
                           style: TextStyle(fontSize: 22),
                         ))),
               ),
               Container(
-                  margin: const EdgeInsets.only(top: 40),
+                  margin: const EdgeInsets.only(top: 40, bottom: 80),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

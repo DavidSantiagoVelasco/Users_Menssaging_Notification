@@ -3,6 +3,7 @@ import 'package:frontend/imports.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SharedService.setUp();
+  await PushNotificationService.setUp();
   runApp(const MyApp());
 }
 
@@ -17,7 +18,8 @@ class MyApp extends StatelessWidget {
       home: const IsLoggedMiddleware(),
       routes: {
         '/login': (context) => const Login(),
-        '/register': (context) => const Register()
+        '/register': (context) => const Register(),
+        '/index': (context) => const Index()
       },
     );
   }
