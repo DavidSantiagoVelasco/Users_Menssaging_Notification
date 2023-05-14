@@ -41,6 +41,32 @@ class UserController {
         });
     }
 
+    public login = (req: Request, res: Response) => {
+        const { email, password, tokenFCM } = req.body;
+        if (!email || !password || !tokenFCM) {
+            return res.status(400).send({
+                error: 'Missing data'
+            });
+        }
+        if (typeof email !== 'string' || typeof password !== 'string' || typeof tokenFCM !== 'string') {
+            return res.status(400).send({
+                error: 'Invalid data'
+            });
+        }
+        if (email.length <= 1 || password.length <= 1 || tokenFCM.length <= 1) {
+            return res.status(400).send({
+                error: 'Invalid data'
+            });
+        }
+        this.userModel.login(email, password, tokenFCM, (response: any) => {
+            if (response.error) {
+                return res.status(401).json({ error: response.error });
+            }
+            let token = this.generateToken(response.id, email, response.name);
+            res.status(200).json({ id: response.id, name: response.name, email: email, photo: response.photo, role: response.role, token: token, messagge: response.success });
+        });
+    }
+
     private generateToken(id: string, email: string, name: string) {
         const token = jwt.sign(
             { id: id, email: email, name: name },

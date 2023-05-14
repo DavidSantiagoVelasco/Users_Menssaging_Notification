@@ -45,6 +45,31 @@ class UserController {
                 res.json({ id: response.id, email: email, name: name, surname: surname, photo: photo, position: position, token: token, messagge: response.success });
             });
         });
+        this.login = (req, res) => {
+            const { email, password, tokenFCM } = req.body;
+            if (!email || !password || !tokenFCM) {
+                return res.status(400).send({
+                    error: 'Missing data'
+                });
+            }
+            if (typeof email !== 'string' || typeof password !== 'string' || typeof tokenFCM !== 'string') {
+                return res.status(400).send({
+                    error: 'Invalid data'
+                });
+            }
+            if (email.length <= 1 || password.length <= 1 || tokenFCM.length <= 1) {
+                return res.status(400).send({
+                    error: 'Invalid data'
+                });
+            }
+            this.userModel.login(email, password, tokenFCM, (response) => {
+                if (response.error) {
+                    return res.status(401).json({ error: response.error });
+                }
+                let token = this.generateToken(response.id, email, response.name);
+                res.status(200).json({ id: response.id, name: response.name, email: email, photo: response.photo, role: response.role, token: token, messagge: response.success });
+            });
+        };
         this.userModel = new usersModel_1.default();
     }
     generateToken(id, email, name) {

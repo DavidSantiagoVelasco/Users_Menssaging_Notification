@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const mongoDBC_1 = __importDefault(require("../mongoDB/mongoDBC"));
 const userSchema_1 = __importDefault(require("../mongoDB/schemas/userSchema"));
 const informationFCMSchema_1 = __importDefault(require("../mongoDB/schemas/informationFCMSchema"));
@@ -55,6 +56,34 @@ class UserModel {
                     error: error
                 });
             }
+        });
+        this.login = (email, password, tokenFCM, fn) => __awaiter(this, void 0, void 0, function* () {
+            this.MongoDBC.connection();
+            const userExists = yield this.MongoDBC.UserSchema.findOne({
+                email: { $eq: email }
+            });
+            if (userExists == null) {
+                return fn({
+                    error: 'Email or password incorrect'
+                });
+            }
+            let compare = bcryptjs_1.default.compareSync(password, userExists.password);
+            if (!compare) {
+                return fn({
+                    error: 'Email or password incorrect'
+                });
+            }
+            yield this.insertTokenFCM(email, tokenFCM);
+            return fn({
+                success: 'Login success',
+                id: userExists._id,
+                email: email,
+                name: userExists.name,
+                surname: userExists.surname,
+                photo: userExists.photo,
+                position: userExists.position,
+                number: userExists.number
+            });
         });
         this.insertTokenFCM = (email, tokenFCM) => __awaiter(this, void 0, void 0, function* () {
             try {

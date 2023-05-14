@@ -1,3 +1,4 @@
+import bcryptjs from "bcryptjs";
 import MongoDBC from "../mongoDB/mongoDBC";
 import UserSchema from "../mongoDB/schemas/userSchema";
 import InformationFCMSchema from "../mongoDB/schemas/informationFCMSchema";
@@ -49,7 +50,37 @@ class UserModel {
                 error: error
             });
         }
+    }
 
+    public login = async (email: string, password: string, tokenFCM: string, fn: Function) => {
+        this.MongoDBC.connection();
+        const userExists = await this.MongoDBC.UserSchema.findOne(
+            {
+                email: { $eq: email }
+            }
+        );
+        if (userExists == null) {
+            return fn({
+                error: 'Email or password incorrect'
+            });
+        }
+        let compare = bcryptjs.compareSync(password, userExists.password);
+        if (!compare) {
+            return fn({
+                error: 'Email or password incorrect'
+            });
+        }
+        await this.insertTokenFCM(email, tokenFCM);
+        return fn({
+            success: 'Login success',
+            id: userExists._id,
+            email: email,
+            name: userExists.name,
+            surname: userExists.surname,
+            photo: userExists.photo,
+            position: userExists.position,
+            number: userExists.number
+        });
     }
 
     public insertTokenFCM = async (email: string, tokenFCM: string) => {
