@@ -1,4 +1,5 @@
 import 'package:frontend/imports.dart';
+import 'package:frontend/pages/system/message_user.dart';
 
 class Index extends StatefulWidget {
   const Index({super.key});
@@ -47,7 +48,7 @@ class _IndexState extends State<Index> {
           final user = _users[index];
           return GestureDetector(
             onTap: () {
-              print("Message");
+              Navigator.push(context, MaterialPageRoute(builder: (context) => MessageUser(user: user)));
             },
             child: Item(user: user),
           );
