@@ -1,3 +1,9 @@
+import 'dart:convert';
+
+RegisterRequestModel registerRequestModel(String str){
+  return RegisterRequestModel.fromJson(jsonDecode(str));
+}
+
 class RegisterRequestModel {
   String? email;
   String? password;

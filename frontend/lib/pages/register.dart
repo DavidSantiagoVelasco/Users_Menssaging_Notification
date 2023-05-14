@@ -35,7 +35,6 @@ class _RegisterState extends State<Register> {
     }
     if (_image != null) {
       await _uploadImageToCloudinary(_image!).then((value) {
-        print("Value de foto $value");
         if (value != null) {
           setState(() {
             _photo = value;
@@ -145,14 +144,13 @@ class _RegisterState extends State<Register> {
   }
 
   Future<String?> _uploadImageToCloudinary(File imageFile) async {
-    final cloudinary = CloudinaryPublic('dti2zyzir', 'prueba');
+    final cloudinary = CloudinaryPublic(Config.cloudinaryCloudName, Config.cloudinaryuploadPreset);
     try {
       final response = await cloudinary.uploadFile(
         CloudinaryFile.fromFile(imageFile.path),
       );
       return response.secureUrl;
     } catch (e) {
-      print("Error upload image $e");
       return null;
     }
   }

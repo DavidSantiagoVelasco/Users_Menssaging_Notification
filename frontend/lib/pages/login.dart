@@ -23,40 +23,33 @@ class _LoginState extends State<Login> {
     if (!validate()) {
       return;
     }
-    // Function to do the login
+    var tokenFCM = PushNotificationService.token!;
+    APIService.login(_email.text, _password.text, tokenFCM).then((value) {
+      if (value == 0) {
+        Navigator.pushReplacementNamed(context, "/index");
+      } else if (value == -1) {
+        CustomShowDialog.make(context, "Error", "Email or password incorrect");
+      } else {
+        CustomShowDialog.make(
+            context, "Error", "An error ocurred. Please try again later");
+      }
+    });
   }
 
   bool validate() {
     if (_email.text == '' || _password.text == '') {
-      showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-                title: const Text('Error'),
-                content: const Text('You must fill in all the fields'),
-                actions: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Ok')),
-                ],
-              ));
+      CustomShowDialog.make(
+          context, "Error", "You must fill in all the fields");
       return false;
     }
     if (!emailValidator.hasMatch(_email.text)) {
-      showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-                title: const Text('Error'),
-                content: const Text('Invalid email'),
-                actions: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Ok')),
-                ],
-              ));
+      CustomShowDialog.make(context, "Error", "Invalid email");
+      return false;
+    }
+    String tokenFCM = PushNotificationService.token ?? "";
+    if (tokenFCM == "") {
+      CustomShowDialog.make(context, "Error",
+          "An error ocurried, please close the application and try again.\nIf the error persist reinstall the application");
       return false;
     }
     return true;
@@ -77,8 +70,16 @@ class _LoginState extends State<Login> {
                   width: 350,
                 ),
               ),
-              CustomTextField(textEditingController: _email, text: "Email", password: false, number: false),
-              CustomTextField(textEditingController: _password, text: "Password", password: true, number: false),
+              CustomTextField(
+                  textEditingController: _email,
+                  text: "Email",
+                  password: false,
+                  number: false),
+              CustomTextField(
+                  textEditingController: _password,
+                  text: "Password",
+                  password: true,
+                  number: false),
               Container(
                 margin: const EdgeInsets.only(top: 50),
                 child: SizedBox(
