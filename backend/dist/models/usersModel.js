@@ -58,32 +58,40 @@ class UserModel {
             }
         });
         this.login = (email, password, tokenFCM, fn) => __awaiter(this, void 0, void 0, function* () {
-            this.MongoDBC.connection();
-            const userExists = yield this.MongoDBC.UserSchema.findOne({
-                email: { $eq: email }
-            });
-            if (userExists == null) {
+            try {
+                this.MongoDBC.connection();
+                const userExists = yield this.MongoDBC.UserSchema.findOne({
+                    email: { $eq: email }
+                });
+                if (userExists == null) {
+                    return fn({
+                        error: 'Email or password incorrect'
+                    });
+                }
+                let compare = bcryptjs_1.default.compareSync(password, userExists.password);
+                if (!compare) {
+                    return fn({
+                        error: 'Email or password incorrect'
+                    });
+                }
+                yield this.insertTokenFCM(email, tokenFCM);
                 return fn({
-                    error: 'Email or password incorrect'
+                    success: 'Login success',
+                    id: userExists._id,
+                    email: email,
+                    name: userExists.name,
+                    surname: userExists.surname,
+                    photo: userExists.photo,
+                    position: userExists.position,
+                    number: userExists.number
                 });
             }
-            let compare = bcryptjs_1.default.compareSync(password, userExists.password);
-            if (!compare) {
+            catch (error) {
+                console.log(`Error in userModel login: ${error}`);
                 return fn({
-                    error: 'Email or password incorrect'
+                    error: error
                 });
             }
-            yield this.insertTokenFCM(email, tokenFCM);
-            return fn({
-                success: 'Login success',
-                id: userExists._id,
-                email: email,
-                name: userExists.name,
-                surname: userExists.surname,
-                photo: userExists.photo,
-                position: userExists.position,
-                number: userExists.number
-            });
         });
         this.insertTokenFCM = (email, tokenFCM) => __awaiter(this, void 0, void 0, function* () {
             try {

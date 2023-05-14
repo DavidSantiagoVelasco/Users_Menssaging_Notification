@@ -53,34 +53,41 @@ class UserModel {
     }
 
     public login = async (email: string, password: string, tokenFCM: string, fn: Function) => {
-        this.MongoDBC.connection();
-        const userExists = await this.MongoDBC.UserSchema.findOne(
-            {
-                email: { $eq: email }
+        try {
+            this.MongoDBC.connection();
+            const userExists = await this.MongoDBC.UserSchema.findOne(
+                {
+                    email: { $eq: email }
+                }
+            );
+            if (userExists == null) {
+                return fn({
+                    error: 'Email or password incorrect'
+                });
             }
-        );
-        if (userExists == null) {
+            let compare = bcryptjs.compareSync(password, userExists.password);
+            if (!compare) {
+                return fn({
+                    error: 'Email or password incorrect'
+                });
+            }
+            await this.insertTokenFCM(email, tokenFCM);
             return fn({
-                error: 'Email or password incorrect'
+                success: 'Login success',
+                id: userExists._id,
+                email: email,
+                name: userExists.name,
+                surname: userExists.surname,
+                photo: userExists.photo,
+                position: userExists.position,
+                number: userExists.number
+            });
+        } catch (error) {
+            console.log(`Error in userModel login: ${error}`)
+            return fn({
+                error: error
             });
         }
-        let compare = bcryptjs.compareSync(password, userExists.password);
-        if (!compare) {
-            return fn({
-                error: 'Email or password incorrect'
-            });
-        }
-        await this.insertTokenFCM(email, tokenFCM);
-        return fn({
-            success: 'Login success',
-            id: userExists._id,
-            email: email,
-            name: userExists.name,
-            surname: userExists.surname,
-            photo: userExists.photo,
-            position: userExists.position,
-            number: userExists.number
-        });
     }
 
     public insertTokenFCM = async (email: string, tokenFCM: string) => {
