@@ -92,6 +92,31 @@ class UserController {
         });
     }
 
+    public deleteTokenFCM = (req: Request, res: Response) => {
+        const { tokenFCM } = req.body;
+        if (!tokenFCM) {
+            return res.status(400).send({
+                error: 'Missing data'
+            });
+        }
+        if (typeof tokenFCM !== 'string') {
+            return res.status(400).send({
+                error: 'Invalid data'
+            });
+        }
+        if (tokenFCM.length <= 1) {
+            return res.status(400).send({
+                error: 'Invalid data'
+            });
+        }
+        this.userModel.deleteTokenFCM(tokenFCM, (response: any) => {
+            if (response.error) {
+                return res.status(401).json({ error: response.error });
+            }
+            return res.status(200).send();
+        });
+    }
+
 
     private generateToken(id: string, email: string, name: string) {
         const token = jwt.sign(

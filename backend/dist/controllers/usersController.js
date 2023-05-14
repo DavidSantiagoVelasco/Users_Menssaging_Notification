@@ -94,6 +94,30 @@ class UserController {
                 res.status(200).send(response);
             });
         };
+        this.deleteTokenFCM = (req, res) => {
+            const { tokenFCM } = req.body;
+            if (!tokenFCM) {
+                return res.status(400).send({
+                    error: 'Missing data'
+                });
+            }
+            if (typeof tokenFCM !== 'string') {
+                return res.status(400).send({
+                    error: 'Invalid data'
+                });
+            }
+            if (tokenFCM.length <= 1) {
+                return res.status(400).send({
+                    error: 'Invalid data'
+                });
+            }
+            this.userModel.deleteTokenFCM(tokenFCM, (response) => {
+                if (response.error) {
+                    return res.status(401).json({ error: response.error });
+                }
+                return res.status(200).send();
+            });
+        };
         this.validateToken = (req, res) => {
             const token = req.body.token;
             if (token) {

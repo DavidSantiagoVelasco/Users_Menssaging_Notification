@@ -116,6 +116,18 @@ class UserModel {
                 return false;
             }
         });
+        this.deleteTokenFCM = (tokenFCM, fn) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this.MongoDBC.InformationFCMSchema.deleteOne({
+                    tokenFCM: tokenFCM
+                });
+                fn({ success: "Record deleted successfully" });
+            }
+            catch (error) {
+                console.log(`Error in userModel deleteTokenFCM: ${error}`);
+                fn({ error: "Error deleting record" });
+            }
+        });
         this.getUsers = (email, fn) => __awaiter(this, void 0, void 0, function* () {
             try {
                 this.MongoDBC.connection();

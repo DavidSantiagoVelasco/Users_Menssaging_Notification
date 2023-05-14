@@ -17,6 +17,7 @@ class UsersRoute{
         this.router.post('/register', this.userController.register);
         this.router.post('/login', this.userController.login);
         this.router.post('/isValidToken', this.userController.validateToken);
+        this.router.post('/deleteTokenFCM', this.userController.deleteTokenFCM);
     }
 }
 

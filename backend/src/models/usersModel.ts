@@ -115,6 +115,20 @@ class UserModel {
         }
     }
 
+    public deleteTokenFCM = async (tokenFCM: string, fn: Function) => {
+        try {
+            await this.MongoDBC.InformationFCMSchema.deleteOne(
+                {
+                    tokenFCM: tokenFCM
+                }
+            );
+            fn({ success: "Record deleted successfully" });
+        } catch (error) {
+            console.log(`Error in userModel deleteTokenFCM: ${error}`)
+            fn({ error: "Error deleting record" });
+        }
+    }
+
     public getUsers = async (email: string, fn: Function) => {
         try {
             this.MongoDBC.connection();
