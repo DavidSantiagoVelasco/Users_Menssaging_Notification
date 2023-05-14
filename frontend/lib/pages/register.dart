@@ -50,7 +50,7 @@ class _RegisterState extends State<Register> {
         surname: _surname.text,
         photo: _photo,
         position: _position.text,
-        number: _number.text,
+        number: int.tryParse(_number.text),
         tokenFCM: tokenFCM);
     APIService.registerUser(user).then((value) {
       if(value == 0){

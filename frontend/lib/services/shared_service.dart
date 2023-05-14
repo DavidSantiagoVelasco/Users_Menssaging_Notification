@@ -37,7 +37,7 @@ class SharedService {
       await prefs.setString('surname', surname);
       await prefs.setString('email', email);
       await prefs.setString('position', position);
-      await prefs.setString('number', number);
+      await prefs.setInt('number', number);
       await prefs.setString('token', token);
       await prefs.setString("photo", photo);
     }

@@ -17,7 +17,7 @@ class _IsLoggedMiddlewareState extends State<IsLoggedMiddleware> {
   isLoggedIn() async {
     await SharedService.isLoggedIn().then((value) => {
       if(value){
-        
+        Navigator.pushReplacementNamed(context, '/index')
       } else {
         Navigator.pushReplacementNamed(context, '/login')
       }

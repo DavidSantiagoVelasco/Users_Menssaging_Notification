@@ -11,7 +11,7 @@ class RegisterRequestModel {
   String? surname;
   String? photo;
   String? position;
-  String? number;
+  int? number;
   String? tokenFCM;
 
   RegisterRequestModel({this.email, this.password, this.name, this.surname, this.photo, this.position, this.number, this.tokenFCM});
