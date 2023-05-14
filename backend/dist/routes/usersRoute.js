@@ -10,6 +10,7 @@ class UsersRoute {
         this.config = () => {
             this.router.post('/register', this.userController.register);
             this.router.post('/login', this.userController.login);
+            this.router.post('/isValidToken', this.userController.validateToken);
         };
         this.router = (0, express_1.Router)();
         this.userController = new usersController_1.default();

@@ -67,7 +67,30 @@ class UserController {
                     return res.status(401).json({ error: response.error });
                 }
                 let token = this.generateToken(response.id, email, response.name);
-                res.status(200).json({ id: response.id, name: response.name, email: email, photo: response.photo, role: response.role, token: token, messagge: response.success });
+                res.status(200).json({ id: response.id, name: response.name, email: email, photo: response.photo, surname: response.surname, position: response.position, number: response.number, token: token, messagge: response.success });
+            });
+        };
+        this.validateToken = (req, res) => {
+            const token = req.body.token;
+            if (token) {
+                let decodedToken;
+                try {
+                    decodedToken = jwt.verify(token, process.env.TOKEN_KEY);
+                }
+                catch (_a) {
+                    return res.status(401).send({
+                        error: 'Invalid token'
+                    });
+                }
+                if (!decodedToken.id || !decodedToken.email || !decodedToken.name) {
+                    return res.status(401).send({
+                        error: 'Invalid token'
+                    });
+                }
+                return res.status(200).send({ role: decodedToken.role, message: 'Token valid' });
+            }
+            return res.status(400).send({
+                error: 'Missin data'
             });
         };
         this.userModel = new usersModel_1.default();
