@@ -1,13 +1,16 @@
 import express, { Application, json } from "express";
 import UsersRoute from "./routes/usersRoute";
+import MessagesRoute from "./routes/messagesRoute";
 
 class Server {
 
     private backend: Application;
     private usersRouter: UsersRoute;
+    private messagesRouter: MessagesRoute;
 
     constructor(){
         this.usersRouter = new UsersRoute();
+        this.messagesRouter = new MessagesRoute();
         this.backend = express();
         this.config();
         this.route();
@@ -20,6 +23,7 @@ class Server {
 
     public route = (): void => {
         this.backend.use('/api/users', this.usersRouter.router);
+        this.backend.use('/api/messages', this.messagesRouter.router);
     }
 
     public start(){
