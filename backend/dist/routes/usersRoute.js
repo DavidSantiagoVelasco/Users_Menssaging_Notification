@@ -8,6 +8,7 @@ const usersController_1 = __importDefault(require("../controllers/usersControlle
 class UsersRoute {
     constructor() {
         this.config = () => {
+            this.router.post('', this.userController.getUsers);
             this.router.post('/register', this.userController.register);
             this.router.post('/login', this.userController.login);
             this.router.post('/isValidToken', this.userController.validateToken);

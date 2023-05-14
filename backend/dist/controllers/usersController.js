@@ -70,6 +70,30 @@ class UserController {
                 res.status(200).json({ id: response.id, name: response.name, email: email, photo: response.photo, surname: response.surname, position: response.position, number: response.number, token: token, messagge: response.success });
             });
         };
+        this.getUsers = (req, res) => {
+            const { email } = req.body;
+            if (!email) {
+                return res.status(400).send({
+                    error: 'Missing data'
+                });
+            }
+            if (typeof email !== 'string') {
+                return res.status(400).send({
+                    error: 'Invalid data'
+                });
+            }
+            if (email.length <= 1) {
+                return res.status(400).send({
+                    error: 'Invalid data'
+                });
+            }
+            this.userModel.getUsers(email, (response) => {
+                if (response.error) {
+                    return res.status(401).json({ error: response.error });
+                }
+                res.status(200).send(response);
+            });
+        };
         this.validateToken = (req, res) => {
             const token = req.body.token;
             if (token) {

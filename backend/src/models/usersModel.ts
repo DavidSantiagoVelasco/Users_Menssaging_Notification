@@ -114,6 +114,29 @@ class UserModel {
             return false;
         }
     }
+
+    public getUsers = async (email: string, fn: Function) => {
+        try {
+            this.MongoDBC.connection();
+            const userExists = await this.MongoDBC.UserSchema.findOne(
+                {
+                    email: { $eq: email }
+                }
+            );
+            if (userExists === null) {
+                return fn({
+                    error: 'Email do not exists'
+                });
+            }
+            const users = await this.MongoDBC.UserSchema.find({ email: { $ne: email } });
+            return fn(users);
+        } catch (error) {
+            console.log(`Error in userModel login: ${error}`)
+            return fn({
+                error: error
+            });
+        }
+    }
 }
 
 export default UserModel;

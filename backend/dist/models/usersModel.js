@@ -116,6 +116,27 @@ class UserModel {
                 return false;
             }
         });
+        this.getUsers = (email, fn) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                this.MongoDBC.connection();
+                const userExists = yield this.MongoDBC.UserSchema.findOne({
+                    email: { $eq: email }
+                });
+                if (userExists === null) {
+                    return fn({
+                        error: 'Email do not exists'
+                    });
+                }
+                const users = yield this.MongoDBC.UserSchema.find({ email: { $ne: email } });
+                return fn(users);
+            }
+            catch (error) {
+                console.log(`Error in userModel login: ${error}`);
+                return fn({
+                    error: error
+                });
+            }
+        });
         this.MongoDBC = new mongoDBC_1.default();
     }
 }
