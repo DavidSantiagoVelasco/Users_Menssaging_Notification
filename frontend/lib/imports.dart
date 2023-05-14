@@ -9,4 +9,6 @@ export 'package:frontend/services/push_notification_service.dart';
 export 'package:frontend/config.dart';
 export 'package:frontend/widgets/custom_text_field.dart';
 export 'package:frontend/widgets/custom_show_dialog.dart';
+export 'package:frontend/widgets/show_user_widget.dart';
 export 'package:frontend/models/register_request_model.dart';
+export 'package:frontend/models/user_model.dart';
