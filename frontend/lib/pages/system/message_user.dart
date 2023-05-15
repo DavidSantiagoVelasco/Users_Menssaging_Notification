@@ -35,6 +35,9 @@ class _MessageUserState extends State<MessageUser> {
     }
     await APIService.sendMessage(_title.text, _message.text, widget.user.email!)
         .then((value) {
+      setState(() {
+        _isDoingFetch = false;
+      });
       if (value == 0) {
         CustomShowDialog.make(context, "Success", "Message sent successfully");
       } else if (value == 1) {
@@ -44,9 +47,6 @@ class _MessageUserState extends State<MessageUser> {
         CustomShowDialog.make(
             context, "Error", "An error ocurred. Please try again later");
       }
-    });
-    setState(() {
-      _isDoingFetch = false;
     });
   }
 
