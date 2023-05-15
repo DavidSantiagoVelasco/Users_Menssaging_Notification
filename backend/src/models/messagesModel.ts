@@ -37,8 +37,8 @@ class MessagesModel {
             }
             const notificationPayload = {
                 notification: {
-                    title: title,
-                    body: message
+                    title: `You have a new message from ${emailSender}!`,
+                    body: `Title: ${title}\nMessage: ${message}`
                 },
                 registration_ids: tokensArray,
             };
