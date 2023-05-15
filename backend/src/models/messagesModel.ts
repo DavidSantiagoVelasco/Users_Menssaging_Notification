@@ -1,5 +1,6 @@
-import MongoDBC from "../mongoDB/mongoDBC";
 import axios from 'axios';
+import MongoDBC from "../mongoDB/mongoDBC";
+import MessageInformation from "../mongoDB/schemas/messageInformationSchema";
 
 class MessagesModel {
 
@@ -32,7 +33,7 @@ class MessagesModel {
             if (tokensArray.length == 0) {
                 return;
             }
-            const messageInformation = {
+            const notificationPayload = {
                 notification: {
                     title: title,
                     body: message
@@ -46,10 +47,19 @@ class MessagesModel {
 
             const response = await axios.post(
                 'https://fcm.googleapis.com/fcm/send',
-                messageInformation,
+                notificationPayload,
                 { headers }
             );
+            const messageInformation = new MessageInformation({
+                title: title,
+                body: message,
+                senderEmail: emailSender,
+                recipientEmail: emailRecipient,
+                recipientTokens: tokensArray,
+                firebaseResults: response.data,
+            });
 
+            await messageInformation.save();
             return fn(response.data);
         } catch (error) {
             console.log(`Error in userModel login: ${error}`)

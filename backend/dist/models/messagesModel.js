@@ -12,8 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoDBC_1 = __importDefault(require("../mongoDB/mongoDBC"));
 const axios_1 = __importDefault(require("axios"));
+const mongoDBC_1 = __importDefault(require("../mongoDB/mongoDBC"));
+const messageInformationSchema_1 = __importDefault(require("../mongoDB/schemas/messageInformationSchema"));
 class MessagesModel {
     constructor() {
         this.sendMessage = (emailSender, emailRecipient, title, message, fn) => __awaiter(this, void 0, void 0, function* () {
@@ -35,7 +36,7 @@ class MessagesModel {
                 if (tokensArray.length == 0) {
                     return;
                 }
-                const messageInformation = {
+                const notificationPayload = {
                     notification: {
                         title: title,
                         body: message
@@ -46,7 +47,16 @@ class MessagesModel {
                     'Content-Type': 'application/json',
                     Authorization: `key=${process.env.FCM_API}`,
                 };
-                const response = yield axios_1.default.post('https://fcm.googleapis.com/fcm/send', messageInformation, { headers });
+                const response = yield axios_1.default.post('https://fcm.googleapis.com/fcm/send', notificationPayload, { headers });
+                const messageInformation = new messageInformationSchema_1.default({
+                    title: title,
+                    body: message,
+                    senderEmail: emailSender,
+                    recipientEmail: emailRecipient,
+                    recipientTokens: tokensArray,
+                    firebaseResults: response.data,
+                });
+                yield messageInformation.save();
                 return fn(response.data);
             }
             catch (error) {
