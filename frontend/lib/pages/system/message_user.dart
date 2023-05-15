@@ -18,7 +18,7 @@ class _MessageUserState extends State<MessageUser> {
     super.initState();
   }
 
-  void _send() {
+  void _send() async {
     setState(() {
       _isDoingFetch = true;
     });
@@ -28,7 +28,26 @@ class _MessageUserState extends State<MessageUser> {
       });
       return;
     }
-    _isDoingFetch = false;
+    if (widget.user.email == null) {
+      CustomShowDialog.make(context, "Error",
+          "It is not possible send the message, please try again later");
+      return;
+    }
+    await APIService.sendMessage(_title.text, _message.text, widget.user.email!)
+        .then((value) {
+      if (value == 0) {
+        CustomShowDialog.make(context, "Success", "Message sent successfully");
+      } else if (value == 1) {
+        CustomShowDialog.make(context, "Error",
+            "The message could not be sent because the user cannot be reached at this time");
+      } else {
+        CustomShowDialog.make(
+            context, "Error", "An error ocurred. Please try again later");
+      }
+    });
+    setState(() {
+      _isDoingFetch = false;
+    });
   }
 
   bool _validate() {

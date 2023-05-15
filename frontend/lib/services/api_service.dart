@@ -134,4 +134,41 @@ class APIService {
       e.toString();
     }
   }
+
+  static Future<int> sendMessage(
+      String title, String message, String emailRecipient) async {
+    Uri url = Uri.http(Config.apiURL, Config.sendMessageAPI);
+    final header = {
+      "Access-Control-Allow-Origin": "*",
+      'Content-Type': 'application/json',
+      'Accept': '*/*'
+    };
+    try {
+      var token = SharedService.prefs.getString('token');
+      var emailSender = SharedService.prefs.getString('email');
+      if (emailSender == null || token == null) {
+        return -1;
+      }
+      final response = await http
+          .post(url,
+              headers: header,
+              body: jsonEncode({
+                'emailSender': emailSender,
+                'emailRecipient': emailRecipient,
+                'title': title,
+                'message': message,
+                'token': token
+              }))
+          .timeout(const Duration(seconds: 3));
+      if (response.statusCode == 200) {
+        return 0;
+      } else if (response.statusCode == 404){
+        return 1;
+      } else {
+        return -2;
+      }
+    } catch (e) {
+      return -3;
+    }
+  }
 }

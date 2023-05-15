@@ -5,6 +5,7 @@ class Config {
   static const String registerUserAPI = '/api/users/register';
   static const String isValidTokenAPI = '/api/users/isValidToken';
   static const String delteTokenFCMAPI= '/api/users/deleteTokenFCM';
+  static const String sendMessageAPI= '/api/messages/send';
   static const String cloudinaryCloudName = "dztkkmzdo";
   static const String cloudinaryuploadPreset = "mmidmftg";
 }
