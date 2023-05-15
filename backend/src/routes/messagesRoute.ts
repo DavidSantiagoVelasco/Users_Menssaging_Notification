@@ -13,7 +13,7 @@ class MessagesRoute{
     }
 
     private config = () => {
-        
+        this.router.post('/send', this.controller.sendMessage);
     }
 }
 

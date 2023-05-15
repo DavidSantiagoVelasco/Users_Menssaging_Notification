@@ -8,6 +8,7 @@ const messagesController_1 = __importDefault(require("../controllers/messagesCon
 class MessagesRoute {
     constructor() {
         this.config = () => {
+            this.router.post('/send', this.controller.sendMessage);
         };
         this.router = (0, express_1.Router)();
         this.controller = new messagesController_1.default();
