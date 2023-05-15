@@ -118,6 +118,7 @@ class UserModel {
         });
         this.deleteTokenFCM = (tokenFCM, fn) => __awaiter(this, void 0, void 0, function* () {
             try {
+                this.MongoDBC.connection();
                 yield this.MongoDBC.InformationFCMSchema.deleteOne({
                     tokenFCM: tokenFCM
                 });

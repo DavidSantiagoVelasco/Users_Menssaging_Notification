@@ -40,6 +40,13 @@ class _MessageUserState extends State<MessageUser> {
     return true;
   }
 
+  void _logout() async {
+    await APIService.logout().then((value) {
+      Navigator.pop(context);
+      Navigator.pushReplacementNamed(context, "/login");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -59,11 +66,7 @@ class _MessageUserState extends State<MessageUser> {
               actions: [
                 IconButton(
                   icon: const Icon(Icons.logout_outlined),
-                  onPressed: (() async {
-                    SharedService.prefs.clear();
-                    Navigator.pop(context);
-                    Navigator.pushReplacementNamed(context, "/login");
-                  }),
+                  onPressed: _logout,
                 )
               ],
             ),

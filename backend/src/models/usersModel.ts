@@ -117,6 +117,7 @@ class UserModel {
 
     public deleteTokenFCM = async (tokenFCM: string, fn: Function) => {
         try {
+            this.MongoDBC.connection();
             await this.MongoDBC.InformationFCMSchema.deleteOne(
                 {
                     tokenFCM: tokenFCM

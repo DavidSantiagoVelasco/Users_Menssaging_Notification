@@ -110,4 +110,28 @@ class APIService {
       return [];
     }
   }
+
+  static Future<void> logout() async {
+    Uri url = Uri.http(Config.apiURL, Config.delteTokenFCMAPI);
+    final header = {
+      "Access-Control-Allow-Origin": "*",
+      'Content-Type': 'application/json',
+      'Accept': '*/*'
+    };
+    try {
+      var tokenFCM = PushNotificationService.token;
+      var token = SharedService.prefs.getString('token');
+      await SharedService.prefs.clear();
+      if (tokenFCM == null || token == null) {
+        return;
+      }
+      await http
+          .post(url,
+              headers: header,
+              body: jsonEncode({'tokenFCM': tokenFCM, 'token': token}))
+          .timeout(const Duration(seconds: 3));
+    } catch (e) {
+      e.toString();
+    }
+  }
 }

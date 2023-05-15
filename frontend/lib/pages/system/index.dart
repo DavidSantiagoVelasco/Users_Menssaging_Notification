@@ -25,6 +25,12 @@ class _IndexState extends State<Index> {
     });
   }
 
+  void _logout() async {
+    await APIService.logout().then((value) {
+      Navigator.pushReplacementNamed(context, "/login");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,10 +41,7 @@ class _IndexState extends State<Index> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout_outlined),
-            onPressed: (() async {
-              SharedService.prefs.clear();
-              Navigator.pushReplacementNamed(context, "/login");
-            }),
+            onPressed: _logout,
           )
         ],
       ),
@@ -48,7 +51,10 @@ class _IndexState extends State<Index> {
           final user = _users[index];
           return GestureDetector(
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => MessageUser(user: user)));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MessageUser(user: user)));
             },
             child: Item(user: user),
           );
