@@ -31,7 +31,9 @@ class MessagesModel {
             const tokens = await this.MongoDBC.InformationFCMSchema.find({ email: { $eq: emailRecipient } });
             const tokensArray = tokens.map((register: any) => register.tokenFCM);
             if (tokensArray.length == 0) {
-                return;
+                return fn({
+                    error: "User does not have registered FCM tokens"
+                });
             }
             const notificationPayload = {
                 notification: {

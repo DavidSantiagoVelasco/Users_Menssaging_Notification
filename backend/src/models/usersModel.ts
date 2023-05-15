@@ -102,7 +102,12 @@ class UserModel {
                 }
             );
             if (tokenFCMExists != null) {
-                return false;
+                if (tokenFCMExists.email == email) {
+                    return true;
+                }
+                tokenFCMExists.email = email;
+                tokenFCMExists.save();
+                return true;
             }
             const newInformationFCM = await informationFCM.save();
             if (newInformationFCM._id) {
@@ -126,7 +131,7 @@ class UserModel {
             fn({ success: "Record deleted successfully" });
         } catch (error) {
             console.log(`Error in userModel deleteTokenFCM: ${error}`)
-            fn({ error: "Error deleting record" });
+            fn({ error: error });
         }
     }
 

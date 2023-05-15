@@ -25,7 +25,12 @@ class MessagesController {
             }
             this.model.sendMessage(emailSender, emailRecipient, title, message, (response) => {
                 if (response.error) {
-                    return res.status(401).json({ error: response.error });
+                    if (response.error == 'User does not have registered FCM tokens') {
+                        return res.status(404).json({ error: response.error });
+                    }
+                    else {
+                        return res.status(401).json({ error: response.error });
+                    }
                 }
                 res.status(200).send(response);
             });

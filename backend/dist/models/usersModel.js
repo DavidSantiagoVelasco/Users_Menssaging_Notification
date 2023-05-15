@@ -103,7 +103,12 @@ class UserModel {
                     tokenFCM: { $eq: tokenFCM }
                 });
                 if (tokenFCMExists != null) {
-                    return false;
+                    if (tokenFCMExists.email == email) {
+                        return true;
+                    }
+                    tokenFCMExists.email = email;
+                    tokenFCMExists.save();
+                    return true;
                 }
                 const newInformationFCM = yield informationFCM.save();
                 if (newInformationFCM._id) {
@@ -126,7 +131,7 @@ class UserModel {
             }
             catch (error) {
                 console.log(`Error in userModel deleteTokenFCM: ${error}`);
-                fn({ error: "Error deleting record" });
+                fn({ error: error });
             }
         });
         this.getUsers = (email, fn) => __awaiter(this, void 0, void 0, function* () {
